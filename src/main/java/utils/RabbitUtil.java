@@ -18,13 +18,13 @@ public class RabbitUtil {
         factory.setPort(RabbitConfig.port);
         factory.setUsername(RabbitConfig.username);
         factory.setPassword(RabbitConfig.password);
-        Connection conn = null;
+        Connection connection = null;
         try {
-            conn = factory.newConnection();
+            connection = factory.newConnection();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return conn;
+        return connection;
     }
 }
 

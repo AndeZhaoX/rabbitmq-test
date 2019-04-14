@@ -41,6 +41,7 @@ public class Consumer1 {
         //queueBind(String queue, String exchange, String routingKey)
         channel.queueBind("zx_queue_f1","zx_fanout","");
 
+        //uack的消息最多有几条
         channel.basicQos(200);
 
         //消息消费

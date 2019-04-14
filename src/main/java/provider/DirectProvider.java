@@ -20,13 +20,32 @@ public class DirectProvider {
         Connection connection = RabbitUtil.GetRabbitConnection();
         // 创建通道
         Channel channel = connection.createChannel();
+
+        //声明exchange
+        //exchange:exchange名称
+        //type:exchange类型
+        //durable:exchange是否持久化(不代表消息持久化)
+        //autoDelete:已经没有消费者了,服务器是否可以删除该Exchange
+        //exchangeDeclare(String exchange, String type, boolean durable, boolean autoDelete,Map<String, Object> arguments)
         channel.exchangeDeclare("zx_direct", BuiltinExchangeType.DIRECT, true);
+
+        //声明queue
+        //queue:queue名称
+        //durable:queue是否持久化
+        //exclusive:是否为当前连接的专用队列，在连接断开后，会自动删除该队列
+        //autodelete：当没有任何消费者使用时，自动删除该队列
+        //queueDeclare(String queue, boolean durable, boolean exclusive, boolean autoDelete,Map<String, Object> arguments)
         channel.queueDeclare("zx_queue_d1", false, false, false, null);
         channel.queueDeclare("zx_queue_d2", false, false, false, null);
         channel.queueDeclare("zx_queue_d3", false, false, false, null);
-        channel.queueBind("zx_queue_d1","zx_direct","");
-        channel.queueBind("zx_queue_d2","zx_direct","");
-        channel.queueBind("zx_queue_d3","zx_direct","");
+
+        //queue:queue名称
+        //exchange:exchange名称
+        //routingKey:路由键;用来绑定queue和exchange
+        //queueBind(String queue, String exchange, String routingKey)
+        channel.queueBind("zx_queue_d1","zx_direct","zx_routkey1");
+        channel.queueBind("zx_queue_d2","zx_direct","zx_routkey2");
+        channel.queueBind("zx_queue_d3","zx_direct","zx_routkey3");
 
         //开启confirm机制
         channel.confirmSelect();
@@ -40,7 +59,7 @@ public class DirectProvider {
             //immediate：true=如果exchange在将消息route到queue(s)时发现对应的queue上没有消费者，那么这条消息不会放入队列中。false=当与消息routeKey关联的所有queue(一个或多个)都没有消费者时，该消息会通过basic.return方法返还给生产者。
             //BasicProperties：消息的基本属性，例如路由头等
             //basicPublish(String exchange, String routingKey, boolean mandatory, boolean immediate, BasicProperties props, byte[] body)
-            channel.basicPublish("zx_direct","",null,message.getBytes("utf-8"));
+            channel.basicPublish("zx_direct","zx_routkey2",null,message.getBytes("utf-8"));
             System.out.println(message);
         }
 

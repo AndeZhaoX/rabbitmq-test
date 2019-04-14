@@ -21,6 +21,13 @@ public class TopicProvider {
         Connection connection = RabbitUtil.GetRabbitConnection();
         // 创建通道
         Channel channel = connection.createChannel();
+
+        //声明exchange
+        //exchange:exchange名称
+        //type:exchange类型
+        //durable:exchange是否持久化(不代表消息持久化)
+        //autoDelete:已经没有消费者了,服务器是否可以删除该Exchange
+        //exchangeDeclare(String exchange, String type, boolean durable, boolean autoDelete,Map<String, Object> arguments)
         channel.exchangeDeclare("zx_topic", BuiltinExchangeType.TOPIC, true,false,null);
 
         //开启confirm机制
